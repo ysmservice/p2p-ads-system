@@ -1,0 +1,5 @@
+# .gitignore
+peer-id.json
+.env
+node_modules/
+app.log

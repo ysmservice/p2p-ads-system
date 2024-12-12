@@ -1,0 +1,33 @@
+{
+  "name": "p2p-ads-system",
+  "version": "1.0.0",
+  "description": "**Manage ads, advertisers, and publishers through a P2P network**",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@libp2p/mplex": "^11.0.15",
+    "@libp2p/noise": "^12.0.1",
+    "@libp2p/peer-id-factory": "^4.2.4",
+    "@libp2p/tcp": "^10.0.14",
+    "@libp2p/websockets": "^9.1.0",
+    "@paypal/checkout-server-sdk": "^1.0.3",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "fs-extra": "^11.2.0",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "libp2p": "^2.4.1",
+    "libp2p-bootstrap": "^0.14.0",
+    "mariadb": "^3.4.0",
+    "node-cron": "^3.0.3",
+    "protobufjs": "^7.4.0",
+    "sequelize": "^6.37.5",
+    "winston": "^3.17.0"
+  }
+}
