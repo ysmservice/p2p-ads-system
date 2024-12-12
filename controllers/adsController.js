@@ -93,3 +93,23 @@ exports.getAllAds = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+exports.getAdsByType = async (req, res) => {
+    const { type } = req.query;
+
+    try {
+        const ads = await Ad.findAll({
+            where: { type },
+            include: [{
+                model: Advertiser,
+                attributes: ['id', 'name', 'email']
+            }],
+            order: [['createdAt', 'DESC']]
+        });
+        res.json({ ads });
+    } catch (err) {
+        console.error('広告タイプでの一覧取得中にエラーが発生しました:', err);
+        logger.error(`広告タイプでの一覧取得エラー: ${{err.message}}`);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};

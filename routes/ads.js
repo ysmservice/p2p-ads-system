@@ -25,4 +25,7 @@ router.put('/:id', authenticate, authorize('advertiser'), validate(adSchema), ad
 // 広告の一覧取得（管理者および広告主のみ）
 router.get('/', authenticate, authorize(['admin', 'advertiser']), adsController.getAllAds);
 
+// 広告の種類別取得（管理者およびパブリッシャーのみ）
+router.get('/type', authenticate, authorize(['admin', 'publisher']), adsController.getAdsByType);
+
 module.exports = router;

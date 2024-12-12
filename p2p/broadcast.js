@@ -9,7 +9,8 @@ const TOPICS = {
     PUBLISHER: 'publisher',
     AD: 'ad',
     INTERACTION: 'interaction',
-    PAYMENT: 'payment'
+    PAYMENT: 'payment',
+    SYNC_REQUEST: 'sync_request'
 };
 
 // メッセージのシリアライズ/デシリアライズ

@@ -6,7 +6,7 @@ const { Noise } = require('@libp2p/noise');
 const Bootstrap = require('@libp2p/bootstrap');
 const Gossipsub = require('@libp2p/gossipsub');
 const logger = require('../utils/logger');
-const { decodeAdvertiser, decodePublisher, decodeAd, decodeInteraction, decodePayment } = require('../p2p/broadcast');
+const { broadcastAd, broadcastAdvertiser, broadcastInteraction, broadcastPayment, broadcastPublisher,decodeAdvertiser, decodePublisher, decodeAd, decodeInteraction, decodePayment } = require('../p2p/broadcast');
 const { Advertiser, Publisher, Ad, Interaction, Payment } = require('../models');
 const { createFromJSON, generate } = require('@libp2p/peer-id-factory');
 const fs = require('fs-extra');
@@ -18,7 +18,8 @@ const TOPICS = {
     PUBLISHER: 'publisher',
     AD: 'ad',
     INTERACTION: 'interaction',
-    PAYMENT: 'payment'
+    PAYMENT: 'payment',
+    SYNC_REQUEST: 'sync_request'
 };
 
 // Peer IDの保存パス
@@ -39,6 +40,41 @@ const getPeerId = async () => {
         await fs.writeJson(PEER_ID_PATH, peerId.toJSON(), { spaces: 2 });
         logger.info(`新しいPeer IDを生成しました: ${{peerId.toB58String()}}`);
         return peerId;
+    }
+};
+
+const requestSync = async (node) => {
+    for (const peerId of node.pubsub.getSubscribers(TOPICS.ADVERTISER)) {
+        if (peerId !== node.peerId.toB58String()) {
+            node.pubsub.publish(TOPICS.SYNC_REQUEST, Buffer.from(peerId));
+        }
+    }
+};
+
+const handleSyncRequest = async (msg) => {
+    const peerId = msg.data.toString();
+    if (peerId !== node.peerId.toB58String()) {
+        const advertisers = await Advertiser.findAll();
+        const publishers = await Publisher.findAll();
+        const ads = await Ad.findAll();
+        const interactions = await Interaction.findAll();
+        const payments = await Payment.findAll();
+
+        for (const advertiser of advertisers) {
+            broadcastAdvertiser(advertiser);
+        }
+        for (const publisher of publishers) {
+            broadcastPublisher(publisher);
+        }
+        for (const ad of ads) {
+            broadcastAd(ad);
+        }
+        for (const interaction of interactions) {
+            broadcastInteraction(interaction);
+        }
+        for (const payment of payments) {
+            broadcastPayment(payment);
+        }
     }
 };
 
@@ -120,6 +156,10 @@ const createLibp2pNode = async () => {
             }
         });
     }
+
+    await node.pubsub.subscribe(TOPICS.SYNC_REQUEST, handleSyncRequest);
+
+    setInterval(() => requestSync(node), 3600000); // 1 hour interval
 
     await node.start();
     logger.info('libp2p node started');
