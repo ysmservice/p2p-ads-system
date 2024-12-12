@@ -207,7 +207,77 @@
     ```
 
 ### 3. 広告管理API
+### **広告タイプ (`ads` の `type`)**
 
+以下はサポートされる広告タイプのリストです。
+
+| タイプ名   | 説明                                                                 |
+| ---------- | -------------------------------------------------------------------- |
+| `image`    | 静的な画像広告。サイズ指定（例: 300x250）に対応します。              |
+| `vast`     | 動画広告。VAST（Video Ad Serving Template）形式をサポートします。   |
+| `vpaid`    | 動画広告。VPAID（Video Player-Ad Interface Definition）をサポートします。 |
+
+---
+
+### **広告登録時の JSON サンプル**
+
+#### 画像広告 (`image`)
+
+```json
+{
+    "type": "image",
+    "data": {
+        "file": "banner_300x250.jpg",
+        "width": 300,
+        "height": 250
+    },
+    "advertiserId": "advertiser_uuid"
+}
+```
+
+#### VAST広告 (`vast`)
+
+```json
+{
+    "type": "vast",
+    "data": {
+        "vastUrl": "https://example.com/vast.xml"
+    },
+    "advertiserId": "advertiser_uuid"
+}
+```
+
+#### VPAID広告 (`vpaid`)
+
+```json
+{
+    "type": "vpaid",
+    "data": {
+        "scriptUrl": "https://example.com/vpaid.js",
+        "parameters": {
+            "key1": "value1",
+            "key2": "value2"
+        }
+    },
+    "advertiserId": "advertiser_uuid"
+}
+```
+
+---
+
+### **インタラクションタイプ (`interactionType`)**
+
+以下はサポートされるインタラクションタイプのリストです。
+
+| タイプ名     | 説明                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| `click`      | 広告がクリックされた場合に記録されます。                              |
+| `view`       | 動画広告の指定時間（例: 50%視聴）を超えた場合に記録。                |
+| `hover`      | ユーザーが広告上に一定時間マウスをホバーした場合に記録されます。      |
+| `engagement` | ユーザーが広告上で特定のアクション（例: スクロール、ズーム）を行った場合に記録されます。 |
+| `complete`   | 動画広告が最後まで再生された場合に記録されます。                      |
+
+---
 - **POST /ads**
   - **説明**: 新しい広告を登録します。（広告主のみ）
   - **リクエストボディ**:
