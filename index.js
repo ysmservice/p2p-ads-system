@@ -7,6 +7,7 @@ const paymentsController = require('./controllers/paymentsController');
 const errorHandler = require('./middleware/errorHandler');
 const bodyParser = require('body-parser');
 const createLibp2pNode = require('./p2p/node');
+const usersController = require('./controllers/usersController'); // Add this line
 
 dotenv.config();
 
@@ -22,6 +23,8 @@ const publishersRoutes = require('./routes/publishers');
 const adsRoutes = require('./routes/ads');
 const interactionsRoutes = require('./routes/interactions');
 const paymentsRoutes = require('./routes/payments');
+const advertiserStatsRoutes = require('./routes/advertiserStats');
+const publisherStatsRoutes = require('./routes/publisherStats');
 
 // ルートの設定
 app.use('/advertisers', advertisersRoutes);
@@ -29,6 +32,9 @@ app.use('/publishers', publishersRoutes);
 app.use('/ads', adsRoutes);
 app.use('/interactions', interactionsRoutes);
 app.use('/payments', paymentsRoutes);
+app.use('/api/advertiser/stats', advertiserStatsRoutes);
+app.use('/api/publisher/stats', publisherStatsRoutes);
+app.use('/users', usersController); // Add this line
 
 // エラーハンドリングミドルウェアの設定
 app.use(errorHandler);

@@ -80,6 +80,41 @@
 
     - **エラー時**: 適切なステータスコードとエラーメッセージ。
 
+### ユーザーID取得
+
+- **URL**: `/users/:email`
+- **メソッド**: `GET`
+- **説明**: 指定されたメールアドレスに対応する広告主および出版社のIDを取得します。
+- **パスパラメータ**:
+    - `email`: ユーザーのメールアドレス
+- **レスポンス**:
+    - **成功時**: `200 OK`
+
+        ```json
+        {
+            "advertiserId": "advertiser_uuid",
+            "publisherId": "publisher_uuid"
+        }
+        ```
+
+    - **エラー時**: 適切なステータスコードとエラーメッセージ。
+
+    - **ユーザーが見つからない場合**: `404 Not Found`
+
+        ```json
+        {
+            "error": "User not found"
+        }
+        ```
+
+    - **サーバーエラー時**: `500 Internal Server Error`
+
+        ```json
+        {
+            "error": "Internal server error"
+        }
+        ```
+
 ## エンドポイント
 
 ### 1. 広告主管理API
@@ -144,6 +179,19 @@
     }
     ```
 
+- **GET /advertisers/:id/stats**
+  - **説明**: 特定の広告主の統計情報を取得します。（管理者および広告主自身）
+  - **レスポンス**:
+    ```json
+    {
+        "stats": {
+            "totalAds": 10,
+            "totalClicks": 100,
+            "totalViews": 200
+        }
+    }
+    ```
+
 ### 2. 出版社管理API
 
 - **POST /publishers**
@@ -203,6 +251,18 @@
     {
         "message": "Publisher updated successfully",
         "publisher": { ... }
+    }
+    ```
+
+- **GET /publishers/:id/stats**
+  - **説明**: 特定の出版社の統計情報を取得します。（管理者および出版社自身）
+  - **レスポンス**:
+    ```json
+    {
+        "stats": {
+            "totalAdsPublished": 5,
+            "totalRevenue": 1000.00
+        }
     }
     ```
 
