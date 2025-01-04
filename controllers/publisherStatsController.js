@@ -5,9 +5,7 @@ exports.getPublisherStats = async (req, res) => {
     const { id } = req.query; // Assuming user ID is available in req.user
 
     try {
-        const publisher = await Publisher.findByPk(id, {
-            include: [Ad]
-        });
+        const publisher = await Publisher.findByPk(id);
 
         if (!publisher) {
             return res.status(404).json({ error: 'Publisher not found' });

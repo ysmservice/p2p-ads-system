@@ -13,6 +13,14 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id'
             }
         },
+        advertiserId: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            references: {
+                model: 'advertisers',
+                key: 'id'
+            }
+        },
         publisherId: {
             type: DataTypes.UUID,
             allowNull: false,
@@ -37,6 +45,7 @@ module.exports = (sequelize, DataTypes) => {
 
     Interaction.associate = (models) => {
         Interaction.belongsTo(models.Ad, { foreignKey: 'adId' });
+        Interaction.belongsTo(models.Advertiser, { foreignKey: 'advertiserId' });
         Interaction.belongsTo(models.Publisher, { foreignKey: 'publisherId' });
     };
 
