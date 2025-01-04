@@ -1,10 +1,11 @@
-const express = require('express');
+import express from 'express';
+import * as paymentsController from '../controllers/paymentsController.js';
+import authenticate from '../middleware/auth.js';
+import authorize from '../middleware/authorize.js';
+import validate from '../middleware/validate.js';
+import Joi from 'joi';
+
 const router = express.Router();
-const paymentsController = require('../controllers/paymentsController');
-const authenticate = require('../middleware/auth');
-const authorize = require('../middleware/authorize');
-const validate = require('../middleware/validate');
-const Joi = require('joi');
 
 // 支払いの作成スキーマ
 const paymentSchema = Joi.object({
@@ -14,7 +15,7 @@ const paymentSchema = Joi.object({
 });
 
 // 支払いの作成（管理者のみ）
-router.post('/', authenticate, authorize(['admin']), validate(paymentSchema), paymentsController.createPayment);
+router.post('/', authenticate, authorize(['admin']), validate(paymentSchema), paymentsController.createPaymentInternal);
 
 // 支払い履歴の取得（管理者、広告主、出版社）
 router.get('/', authenticate, authorize(['admin', 'advertiser', 'publisher']), paymentsController.getAllPayments);
@@ -26,6 +27,6 @@ router.get('/:id', authenticate, authorize(['admin', 'advertiser', 'publisher'])
 router.post('/webhook', paymentsController.handleWebhook);
 
 // 管理者による累積支払い処理の手動トリガー
-router.post('/process-bulk-payments', authenticate, authorize('admin'), paymentsController.processBulkPayments);
+router.post('/process-bulk-payments', authenticate, authorize(['admin']), paymentsController.processBulkPayments);
 
-module.exports = router;
+export default router;

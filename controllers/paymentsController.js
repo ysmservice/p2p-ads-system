@@ -1,7 +1,7 @@
 const { Payment, Advertiser, Publisher, Ad, Interaction } = require('../models');
 const paypalClient = require('../config/paypalClient').client;
 const checkoutNodeJssdk = require('@paypal/checkout-server-sdk');
-const logger = require('../logger');
+const logger = require('../utils/logger');
 const dotenv = require('dotenv');
 const { Op } = require('sequelize');
 const { broadcastPayment } = require('../p2p/broadcast');
@@ -78,8 +78,8 @@ exports.createPaymentInternal = async () => {
                         brand_name: 'P2P Ad Server',
                         landing_page: 'BILLING',
                         user_action: 'PAY_NOW',
-                        return_url: `https://yourdomain.com/paypal/return?paymentId=`,
-                        cancel_url: `https://yourdomain.com/paypal/cancel`
+                        return_url: `${process.env.PAYPAL_RETURN_URL}?paymentId=`,
+                        cancel_url: process.env.PAYPAL_CANCEL_URL
                     }
                 });
 
@@ -100,7 +100,7 @@ exports.createPaymentInternal = async () => {
 
                     // 承認URLの取得
                     const approvalLink = order.result.links.find(link => link.rel === 'approve').href;
-                    logger.info(`支払いが作成されました: ${{paymentRecord.id}}, PayPal Order ID: ${{order.result.id}}`);
+                    logger.info(`支払いが作成されました: ${paymentRecord.id}, PayPal Order ID: ${order.result.id}`);
 
                     // P2Pネットワークに支払い情報をブロードキャスト
                     broadcastPayment(paymentRecord);
@@ -108,13 +108,13 @@ exports.createPaymentInternal = async () => {
                     // 必要に応じて広告主にメール通知などを実装
                 } catch (err) {
                     console.error('内部支払い作成中にエラーが発生しました:', err);
-                    logger.error(`内部支払い作成エラー: ${{err.message}}`);
+                    logger.error(`内部支払い作成エラー: ${err.message}`);
                 }
             }
         }
     } catch (err) {
         console.error('累積支払い処理中にエラーが発生しました:', err);
-        logger.error(`累積支払い処理エラー: ${{err.message}}`);
+        logger.error(`累積支払い処理エラー: ${err.message}`);
     }
 };
 
@@ -148,7 +148,7 @@ exports.handleWebhook = async (req, res) => {
                 payment.status = 'completed';
                 payment.paypalTransactionId = capture.result.id;
                 await payment.save();
-                logger.info(`支払いが完了しました: ${{payment.id}}, PayPal Transaction ID: ${{capture.result.id}}`);
+                logger.info(`支払いが完了しました: ${payment.id}, PayPal Transaction ID: ${capture.result.id}`);
 
                 // P2Pネットワークに支払いステータスの更新をブロードキャスト
                 broadcastPayment(payment);
@@ -157,7 +157,7 @@ exports.handleWebhook = async (req, res) => {
             res.status(200).send('Webhook received and processed');
         } catch (err) {
             console.error('Webhook処理中にエラーが発生しました:', err);
-            logger.error(`Webhook処理エラー: ${{err.message}}`);
+            logger.error(`Webhook処理エラー: ${err.message}`);
             res.status(500).send('Internal Server Error');
         }
     } else {
@@ -183,7 +183,7 @@ async function verifyWebhook(body, headers, webhookId) {
         return response.result.verification_status === 'SUCCESS';
     } catch (err) {
         console.error('Webhook検証中にエラーが発生しました:', err);
-        logger.error(`Webhook検証エラー: ${{err.message}}`);
+        logger.error(`Webhook検証エラー: ${err.message}`);
         return false;
     }
 }
@@ -195,7 +195,7 @@ exports.processBulkPayments = async (req, res) => {
         res.status(200).json({ message: 'Bulk payments processed successfully' });
     } catch (err) {
         console.error('Bulk payments処理中にエラーが発生しました:', err);
-        logger.error(`Bulk payments処理エラー: ${{err.message}}`);
+        logger.error(`Bulk payments処理エラー: ${err.message}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -214,7 +214,7 @@ exports.getAllPayments = async (req, res) => {
         res.json({ payments });
     } catch (err) {
         console.error('支払い一覧取得中にエラーが発生しました:', err);
-        logger.error(`支払い一覧取得エラー: ${{err.message}}`);
+        logger.error(`支払い一覧取得エラー: ${err.message}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -237,7 +237,7 @@ exports.getPayment = async (req, res) => {
         res.json({ payment });
     } catch (err) {
         console.error('支払い取得中にエラーが発生しました:', err);
-        logger.error(`支払い取得エラー: ${{err.message}}`);
+        logger.error(`支払い取得エラー: ${err.message}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };

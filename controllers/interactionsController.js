@@ -1,5 +1,5 @@
 const { Interaction, Ad, Publisher } = require('../models');
-const logger = require('../logger');
+const logger = require('../utils/logger');
 const { broadcastInteraction } = require('../p2p/broadcast');
 
 exports.recordInteraction = async (req, res) => {
@@ -23,7 +23,7 @@ exports.recordInteraction = async (req, res) => {
             interactionType
         });
 
-        logger.info(`インタラクションが記録されました: ${{interaction.id}}`);
+        logger.info(`インタラクションが記録されました: ${interaction.id}`);
 
         // P2Pネットワークにインタラクションをブロードキャスト
         broadcastInteraction(interaction);
@@ -31,7 +31,7 @@ exports.recordInteraction = async (req, res) => {
         res.status(201).json({ message: 'Interaction recorded successfully', interaction });
     } catch (err) {
         console.error('インタラクション記録中にエラーが発生しました:', err);
-        logger.error(`インタラクション記録エラー: ${{err.message}}`);
+        logger.error(`インタラクション記録エラー: ${err.message}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };

@@ -1,5 +1,5 @@
 const { Ad, Advertiser } = require('../models');
-const logger = require('../logger');
+const logger = require('../utils/logger');
 const { broadcastAd } = require('../p2p/broadcast');
 
 exports.registerAd = async (req, res) => {
@@ -12,7 +12,7 @@ exports.registerAd = async (req, res) => {
         }
 
         const newAd = await Ad.create({ type, data, advertiserId });
-        logger.info(`新しい広告が登録されました: ${{newAd.id}}`);
+        logger.info(`新しい広告が登録されました: ${newAd.id}`);
 
         // P2Pネットワークに新しい広告をブロードキャスト
         broadcastAd(newAd);
@@ -20,7 +20,7 @@ exports.registerAd = async (req, res) => {
         res.status(201).json({ message: 'Ad registered successfully', ad: newAd });
     } catch (err) {
         console.error('広告登録中にエラーが発生しました:', err);
-        logger.error(`広告登録エラー: ${{err.message}}`);
+        logger.error(`広告登録エラー: ${err.message}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -41,7 +41,7 @@ exports.getAd = async (req, res) => {
         res.json({ ad });
     } catch (err) {
         console.error('広告取得中にエラーが発生しました:', err);
-        logger.error(`広告取得エラー: ${{err.message}}`);
+        logger.error(`広告取得エラー: ${err.message}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -64,7 +64,7 @@ exports.updateAd = async (req, res) => {
         }
 
         await ad.update({ type, data, advertiserId });
-        logger.info(`広告が更新されました: ${{ad.id}}`);
+        logger.info(`広告が更新されました: ${ad.id}`);
 
         // P2Pネットワークに広告の更新をブロードキャスト
         broadcastAd(ad);
@@ -72,7 +72,7 @@ exports.updateAd = async (req, res) => {
         res.json({ message: 'Ad updated successfully', ad });
     } catch (err) {
         console.error('広告更新中にエラーが発生しました:', err);
-        logger.error(`広告更新エラー: ${{err.message}}`);
+        logger.error(`広告更新エラー: ${err.message}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -89,7 +89,7 @@ exports.getAllAds = async (req, res) => {
         res.json({ ads });
     } catch (err) {
         console.error('広告一覧取得中にエラーが発生しました:', err);
-        logger.error(`広告一覧取得エラー: ${{err.message}}`);
+        logger.error(`広告一覧取得エラー: ${err.message}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -109,7 +109,7 @@ exports.getAdsByType = async (req, res) => {
         res.json({ ads });
     } catch (err) {
         console.error('広告タイプでの一覧取得中にエラーが発生しました:', err);
-        logger.error(`広告タイプでの一覧取得エラー: ${{err.message}}`);
+        logger.error(`広告タイプでの一覧取得エラー: ${err.message}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };

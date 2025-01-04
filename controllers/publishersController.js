@@ -1,5 +1,5 @@
 const { Publisher } = require('../models');
-const logger = require('../logger');
+const logger = require('../utils/logger');
 const { broadcastPublisher } = require('../p2p/broadcast');
 
 exports.registerPublisher = async (req, res) => {
@@ -12,7 +12,7 @@ exports.registerPublisher = async (req, res) => {
         }
 
         const newPublisher = await Publisher.create({ name, email, paymentMethod, paymentDetails });
-        logger.info(`新しい出版社が登録されました: ${{newPublisher.id}}`);
+        logger.info(`新しい出版社が登録されました: ${newPublisher.id}`);
 
         // P2Pネットワークに新しい出版社をブロードキャスト
         broadcastPublisher(newPublisher);
@@ -20,7 +20,7 @@ exports.registerPublisher = async (req, res) => {
         res.status(201).json({ message: 'Publisher registered successfully', publisher: newPublisher });
     } catch (err) {
         console.error('出版社登録中にエラーが発生しました:', err);
-        logger.error(`出版社登録エラー: ${{err.message}}`);
+        logger.error(`出版社登録エラー: ${err.message}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -36,7 +36,7 @@ exports.getPublisher = async (req, res) => {
         res.json({ publisher });
     } catch (err) {
         console.error('出版社取得中にエラーが発生しました:', err);
-        logger.error(`出版社取得エラー: ${{err.message}}`);
+        logger.error(`出版社取得エラー: ${err.message}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -52,7 +52,7 @@ exports.updatePublisher = async (req, res) => {
         }
 
         await publisher.update({ name, email, paymentMethod, paymentDetails });
-        logger.info(`出版社が更新されました: ${{publisher.id}}`);
+        logger.info(`出版社が更新されました: ${publisher.id}`);
 
         // P2Pネットワークに出版社の更新をブロードキャスト
         broadcastPublisher(publisher);
@@ -60,7 +60,7 @@ exports.updatePublisher = async (req, res) => {
         res.json({ message: 'Publisher updated successfully', publisher });
     } catch (err) {
         console.error('出版社更新中にエラーが発生しました:', err);
-        logger.error(`出版社更新エラー: ${{err.message}}`);
+        logger.error(`出版社更新エラー: ${err.message}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -71,7 +71,7 @@ exports.getAllPublishers = async (req, res) => {
         res.json({ publishers });
     } catch (err) {
         console.error('出版社一覧取得中にエラーが発生しました:', err);
-        logger.error(`出版社一覧取得エラー: ${{err.message}}`);
+        logger.error(`出版社一覧取得エラー: ${err.message}`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };

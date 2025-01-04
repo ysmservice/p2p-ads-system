@@ -14,7 +14,7 @@ module.exports = (req, res, next) => {
 
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
-            logger.error(`JWT認証エラー: ${{err.message}}`);
+            logger.error(`JWT認証エラー: ${err.message}`);
             return res.status(403).json({ error: 'Invalid token' });
         }
         req.user = user;

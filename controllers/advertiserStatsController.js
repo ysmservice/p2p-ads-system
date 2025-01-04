@@ -1,5 +1,5 @@
 const { Advertiser, Ad, Interaction } = require('../models');
-const logger = require('../logger');
+const logger = require('../utils/logger');
 
 exports.getAdvertiserStats = async (req, res) => {
     const { id } = req.user; // Assuming user ID is available in req.user
