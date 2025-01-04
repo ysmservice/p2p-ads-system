@@ -1,6 +1,7 @@
 const { Publisher } = require('../models');
 const logger = require('../utils/logger');
 const { broadcastPublisher } = require('../p2p/broadcast');
+const bcrypt = require('bcrypt');
 
 exports.registerPublisher = async (req, res) => {
     const { name, email, paymentMethod, paymentDetails, password } = req.body;

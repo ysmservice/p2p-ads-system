@@ -1,6 +1,7 @@
 const { Advertiser } = require('../models');
 const logger = require('../utils/logger');
 const { broadcastAdvertiser } = require('../p2p/broadcast');
+const bcrypt = require('bcrypt');
 
 exports.registerAdvertiser = async (req, res) => {
     const { name, email, paymentMethod, paymentDetails, password } = req.body;
