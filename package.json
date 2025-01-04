@@ -30,6 +30,7 @@
     "@libp2p/tcp": "^10.0.14",
     "@libp2p/websockets": "^9.1.0",
     "@paypal/checkout-server-sdk": "^1.0.3",
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
     "events": "^3.3.0",
@@ -43,5 +44,8 @@
     "protobufjs": "^7.4.0",
     "sequelize": "^6.37.5",
     "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.6.2"
   }
 }
