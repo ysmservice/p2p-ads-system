@@ -1,5 +1,11 @@
 const { Publisher, Ad, Interaction } = require('../models');
 const logger = require('../utils/logger');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+// Get interaction rates from environment variables
+const INTERACTION_RATES = JSON.parse(process.env.INTERACTION_RATES || '{}');
 
 exports.getPublisherStats = async (req, res) => {
     const { id } = req.query;
@@ -11,15 +17,27 @@ exports.getPublisherStats = async (req, res) => {
             return res.status(404).json({ error: 'Publisher not found' });
         }
 
-        const totalAdsPublished = await Ad.count({ where: { publisherId: id } });
-        const totalRevenue = await Interaction.sum('revenue', { 
-            where: { publisherId: id },
-            raw: true
-        }) || 0;
+        // Get all ads for this publisher
+        const ads = await Ad.findAll({
+            where: { publisherId: id }
+        });
+
+        const totalAdsPublished = ads.length;
+
+        // Get all interactions for this publisher
+        const interactions = await Interaction.findAll({
+            where: { publisherId: id }
+        });
+
+        // Calculate total revenue based on interaction types and rates
+        const totalRevenue = interactions.reduce((sum, interaction) => {
+            const rate = INTERACTION_RATES[interaction.interactionType] || 0;
+            return sum + rate;
+        }, 0);
 
         const stats = {
             totalAdsPublished,
-            totalRevenue: parseFloat(totalRevenue).toFixed(2)
+            totalRevenue: parseFloat(totalRevenue.toFixed(2))
         };
 
         res.json({ stats });
