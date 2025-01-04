@@ -1,19 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const { Advertiser, Publisher, Admin } = require('../models'); // Import Advertiser, Publisher, and Admin models
+const db = require('../models');
 const { generateToken } = require('../utils/jwt');
+
+// モデルを直接参照
+const { Advertiser, Publisher, Admin } = db;
 
 // GET /users/:email
 router.get('/:email', async (req, res) => {
     try {
         const advertiser = await Advertiser.findOne({ where: { email: req.params.email } });
         const publisher = await Publisher.findOne({ where: { email: req.params.email } });
-
+        const admin = await Admin.findOne({ where: { email: req.params.email }});
         if (advertiser || publisher) {
             return res.json({
                 advertiserId: advertiser ? advertiser.id : null,
                 publisherId: publisher ? publisher.id : null
+            });
+        }
+        if (admin) {
+            return res.json({
+                adminId: admin.id
             });
         }
 

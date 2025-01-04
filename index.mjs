@@ -27,6 +27,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ルートの設定
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use('/advertisers', advertisersRoutes);
 app.use('/publishers', publishersRoutes);
 app.use('/ads', adsRoutes);
