@@ -19,7 +19,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         password: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true,  // 空文字を許可しない
+                len: [6, 100]    // 最小6文字、最大100文字
+            }
         },
         paymentMethod: {
             type: DataTypes.STRING,
