@@ -3,7 +3,7 @@ const logger = require('../utils/logger');
 const { broadcastPublisher } = require('../p2p/broadcast');
 
 exports.registerPublisher = async (req, res) => {
-    const { name, email, paymentMethod, paymentDetails } = req.body;
+    const { name, email, paymentMethod, paymentDetails, password } = req.body;
 
     try {
         const existingPublisher = await Publisher.findOne({ where: { email } });
@@ -11,7 +11,7 @@ exports.registerPublisher = async (req, res) => {
             return res.status(409).json({ error: 'Publisher with this email already exists' });
         }
 
-        const newPublisher = await Publisher.create({ name, email, paymentMethod, paymentDetails });
+        const newPublisher = await Publisher.create({ name, email, paymentMethod, paymentDetails, password });
         logger.info(`新しい出版社が登録されました: ${newPublisher.id}`);
 
         // P2Pネットワークに新しい出版社をブロードキャスト

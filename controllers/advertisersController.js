@@ -3,7 +3,7 @@ const logger = require('../utils/logger');
 const { broadcastAdvertiser } = require('../p2p/broadcast');
 
 exports.registerAdvertiser = async (req, res) => {
-    const { name, email, paymentMethod, paymentDetails } = req.body;
+    const { name, email, paymentMethod, paymentDetails, password } = req.body;
 
     try {
         const existingAdvertiser = await Advertiser.findOne({ where: { email } });
@@ -11,7 +11,7 @@ exports.registerAdvertiser = async (req, res) => {
             return res.status(409).json({ error: 'Advertiser with this email already exists' });
         }
 
-        const newAdvertiser = await Advertiser.create({ name, email, paymentMethod, paymentDetails });
+        const newAdvertiser = await Advertiser.create({ name, email, paymentMethod, paymentDetails, password });
         logger.info(`新しい広告主が登録されました: ${newAdvertiser.id}`, { 
             advertiserId: newAdvertiser.id,
             email: newAdvertiser.email
