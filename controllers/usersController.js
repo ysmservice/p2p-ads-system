@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const { Advertiser, Publisher } = require('../models'); // Import Advertiser and Publisher models
+const { Advertiser, Publisher, Admin } = require('../models'); // Import Advertiser, Publisher, and Admin models
+const { generateToken } = require('../utils/jwt');
 
 // GET /users/:email
 router.get('/:email', async (req, res) => {
@@ -27,27 +28,49 @@ router.post('/register', async (req, res) => {
     try {
         const { email, password, role } = req.body;
         
-        // Check if user already exists
+        // Check if user already exists in any role
         const existingAdvertiser = await Advertiser.findOne({ where: { email } });
         const existingPublisher = await Publisher.findOne({ where: { email } });
+        const existingAdmin = await Admin.findOne({ where: { email } });
         
-        if (existingAdvertiser || existingPublisher) {
+        if (existingAdvertiser || existingPublisher || existingAdmin) {
             return res.status(400).json({ error: 'Email already registered' });
         }
 
-        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
+        let newUser;
         
         // Create user based on role
-        if (role === 'advertiser') {
-            await Advertiser.create({ email, password: hashedPassword });
-        } else if (role === 'publisher') {
-            await Publisher.create({ email, password: hashedPassword });
-        } else {
-            return res.status(400).json({ error: 'Invalid role specified' });
+        switch (role) {
+            case 'advertiser':
+                newUser = await Advertiser.create({ email, password: hashedPassword });
+                break;
+            case 'publisher':
+                newUser = await Publisher.create({ email, password: hashedPassword });
+                break;
+            case 'admin':
+                newUser = await Admin.create({ email, password: hashedPassword });
+                break;
+            default:
+                return res.status(400).json({ error: 'Invalid role specified' });
         }
 
-        res.status(201).json({ message: 'User registered successfully' });
+        // Generate JWT token
+        const token = generateToken({ 
+            id: newUser.id, 
+            email: newUser.email, 
+            role: role 
+        });
+
+        res.status(201).json({ 
+            message: 'User registered successfully',
+            token,
+            user: {
+                id: newUser.id,
+                email: newUser.email,
+                role: role
+            }
+        });
     } catch (err) {
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -58,26 +81,41 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         
-        // Check both Advertiser and Publisher tables
+        // Check all user tables
         const advertiser = await Advertiser.findOne({ where: { email } });
         const publisher = await Publisher.findOne({ where: { email } });
+        const admin = await Admin.findOne({ where: { email } });
         
-        const user = advertiser || publisher;
+        const user = admin || advertiser || publisher;
         
         if (!user) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
-        // Verify password
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
+        // Determine role
+        let role = 'publisher';
+        if (admin) role = 'admin';
+        else if (advertiser) role = 'advertiser';
+
+        // Generate JWT token
+        const token = generateToken({ 
+            id: user.id, 
+            email: user.email, 
+            role: role 
+        });
+
         res.json({
-            id: user.id,
-            email: user.email,
-            role: advertiser ? 'advertiser' : 'publisher'
+            token,
+            user: {
+                id: user.id,
+                email: user.email,
+                role: role
+            }
         });
     } catch (err) {
         res.status(500).json({ error: 'Internal server error' });

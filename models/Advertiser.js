@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         name: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true  // nameは登録時に必須としない
         },
         email: {
             type: DataTypes.STRING,
@@ -19,12 +19,12 @@ module.exports = (sequelize, DataTypes) => {
         },
         paymentMethod: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,  // 登録時は必須としない
             defaultValue: 'paypal'
         },
         paymentDetails: {
             type: DataTypes.JSON,
-            allowNull: false
+            allowNull: true   // 登録時は必須としない
         }
     }, {
         tableName: 'advertisers',
