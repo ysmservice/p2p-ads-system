@@ -10,6 +10,7 @@ const Joi = require('joi');
 const publisherSchema = Joi.object({
     name: Joi.string().required(),
     email: Joi.string().email().required(),
+    password: Joi.string().min(6).max(100).required(),
     paymentMethod: Joi.string().valid('paypal').required(),
     paymentDetails: Joi.object({
         paypalEmail: Joi.string().email().required()
