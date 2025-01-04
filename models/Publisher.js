@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         name: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         email: {
             type: DataTypes.STRING,
@@ -17,14 +17,19 @@ module.exports = (sequelize, DataTypes) => {
                 isEmail: true
             }
         },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         paymentMethod: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
             defaultValue: 'paypal'
         },
         paymentDetails: {
             type: DataTypes.JSON,
-            allowNull: false
+            allowNull: true,
+            defaultValue: {}
         }
     }, {
         tableName: 'publishers',

@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
                 isEmail: true
             }
         },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         paymentMethod: {
             type: DataTypes.STRING,
             allowNull: true,  // 登録時は必須としない
@@ -24,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         paymentDetails: {
             type: DataTypes.JSON,
-            allowNull: true   // 登録時は必須としない
+            allowNull: true,   // 登録時は必須としない
+            defaultValue: {}
         }
     }, {
         tableName: 'advertisers',
