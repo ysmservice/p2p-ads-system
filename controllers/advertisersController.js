@@ -12,15 +12,20 @@ exports.registerAdvertiser = async (req, res) => {
         }
 
         const newAdvertiser = await Advertiser.create({ name, email, paymentMethod, paymentDetails });
-        logger.info(`新しい広告主が登録されました: ${newAdvertiser.id}`);
+        logger.info(`新しい広告主が登録されました: ${newAdvertiser.id}`, { 
+            advertiserId: newAdvertiser.id,
+            email: newAdvertiser.email
+        });
 
         // P2Pネットワークに新しい広告主をブロードキャスト
         broadcastAdvertiser(newAdvertiser);
 
         res.status(201).json({ message: 'Advertiser registered successfully', advertiser: newAdvertiser });
     } catch (err) {
-        console.error('広告主登録中にエラーが発生しました:', err);
-        logger.error(`広告主登録エラー: ${err.message}`);
+        logger.error('広告主登録中にエラーが発生しました', { 
+            error: err.message,
+            stack: err.stack
+        });
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -52,15 +57,21 @@ exports.updateAdvertiser = async (req, res) => {
         }
 
         await advertiser.update({ name, email, paymentMethod, paymentDetails });
-        logger.info(`広告主が更新されました: ${advertiser.id}`);
+        logger.info(`広告主が更新されました: ${id}`, {
+            advertiserId: id,
+            updates: { name, email, paymentMethod }
+        });
 
         // P2Pネットワークに広告主の更新をブロードキャスト
         broadcastAdvertiser(advertiser);
 
         res.json({ message: 'Advertiser updated successfully', advertiser });
     } catch (err) {
-        console.error('広告主更新中にエラーが発生しました:', err);
-        logger.error(`広告主更新エラー: ${err.message}`);
+        logger.error('広告主更新中にエラーが発生しました', {
+            advertiserId: id,
+            error: err.message,
+            stack: err.stack
+        });
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
