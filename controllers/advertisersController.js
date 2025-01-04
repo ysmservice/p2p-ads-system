@@ -12,7 +12,7 @@ exports.registerAdvertiser = async (req, res) => {
             return res.status(409).json({ error: 'Advertiser with this email already exists' });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newAdvertiser = await Advertiser.create({ name, email, paymentMethod, paymentDetails, hashedPassword });
+        const newAdvertiser = await Advertiser.create({ name, email, paymentMethod, paymentDetails, password: hashedPassword });
         logger.info(`新しい広告主が登録されました: ${newAdvertiser.id}`, { 
             advertiserId: newAdvertiser.id,
             email: newAdvertiser.email

@@ -12,7 +12,7 @@ exports.registerPublisher = async (req, res) => {
             return res.status(409).json({ error: 'Publisher with this email already exists' });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newPublisher = await Publisher.create({ name, email, paymentMethod, paymentDetails, hashedPassword });
+        const newPublisher = await Publisher.create({ name, email, paymentMethod, paymentDetails, password: hashedPassword });
         logger.info(`新しい出版社が登録されました: ${newPublisher.id}`);
 
         // P2Pネットワークに新しい出版社をブロードキャスト
