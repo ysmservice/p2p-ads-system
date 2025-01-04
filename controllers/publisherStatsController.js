@@ -17,17 +17,21 @@ exports.getPublisherStats = async (req, res) => {
             return res.status(404).json({ error: 'Publisher not found' });
         }
 
-        // Get all ads for this publisher
-        const ads = await Ad.findAll({
-            where: { publisherId: id }
-        });
-
-        const totalAdsPublished = ads.length;
-
+        const ads = [];
         // Get all interactions for this publisher
         const interactions = await Interaction.findAll({
             where: { publisherId: id }
         });
+        const ac = [];
+        for (const interaction of interactions) {
+            const ad = await Ad.findByPk(interaction.adId);
+            if(ac[ad.id] === undefined) {
+                ac[ad.id] = 0;
+                ads.push(ad);
+            }
+        }
+
+        const totalAdsPublished = ads.length;
 
         // Calculate total revenue based on interaction types and rates
         const totalRevenue = interactions.reduce((sum, interaction) => {
