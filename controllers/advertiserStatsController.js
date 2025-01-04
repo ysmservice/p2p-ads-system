@@ -2,7 +2,7 @@ const { Advertiser, Ad, Interaction } = require('../models');
 const logger = require('../utils/logger');
 
 exports.getAdvertiserStats = async (req, res) => {
-    const { id } = req.user; // Assuming user ID is available in req.user
+    const { id } = req.query; // Assuming user ID is available in req.user
 
     try {
         const advertiser = await Advertiser.findByPk(id, {

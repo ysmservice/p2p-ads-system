@@ -2,7 +2,7 @@ const { Publisher, Ad, Interaction } = require('../models');
 const logger = require('../utils/logger');
 
 exports.getPublisherStats = async (req, res) => {
-    const { id } = req.user; // Assuming user ID is available in req.user
+    const { id } = req.query; // Assuming user ID is available in req.user
 
     try {
         const publisher = await Publisher.findByPk(id, {
