@@ -11,7 +11,7 @@ exports.getPublisherStats = async (req, res) => {
             return res.status(404).json({ error: 'Publisher not found' });
         }
 
-        const totalAdsPublished = publisher.Ads.length;
+        const totalAdsPublished = 0;
         const totalRevenue = await Interaction.sum('revenue', { where: { publisherId: id } });
 
         const stats = {

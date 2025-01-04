@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         interactionType: {
-            type: DataTypes.ENUM('click', 'video_view'),
+            type: DataTypes.ENUM('click', 'video_view', 'video_complete', 'video_mute', 'video_pause', 'video_unmute', 'video_fullscreen', 'video_expand', 'video_collapse', 'view'),
             allowNull: false
         },
         timestamp: {

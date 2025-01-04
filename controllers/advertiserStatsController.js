@@ -14,8 +14,8 @@ exports.getAdvertiserStats = async (req, res) => {
         }
 
         const totalAds = advertiser.Ads.length;
-        const totalClicks = await Interaction.count({ where: { advertiserId: id, type: 'click' } });
-        const totalViews = await Interaction.count({ where: { advertiserId: id, type: 'view' } });
+        const totalClicks = await Interaction.count({ where: { advertiserId: id, interactionType: 'click' } });
+        const totalViews = await Interaction.count({ where: { advertiserId: id, interactionType: 'view' } });
 
         const stats = {
             totalAds,
