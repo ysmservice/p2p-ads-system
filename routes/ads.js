@@ -17,7 +17,7 @@ const adSchema = Joi.object({
 router.post('/', authenticate, authorize('advertiser'), validate(adSchema), adsController.registerAd);
 
 // 広告の取得（管理者および広告主のみ）
-router.get('/:id', authenticate, authorize(['admin', 'advertiser']), adsController.getAd);
+router.get('/id/:id', authenticate, authorize(['admin', 'advertiser']), adsController.getAd);
 
 // 広告の更新（広告主のみ）
 router.put('/:id', authenticate, authorize('advertiser'), validate(adSchema), adsController.updateAd);
