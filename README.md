@@ -50,8 +50,12 @@ npm install
 プロジェクトのルートディレクトリに .env ファイルを作成し、以下の環境変数を設定します。
 
 ```env
-PORT=3000
+PORT=22335
 MARIADB_URI=mariadb://ad_user:your_password@localhost:3306/p2p_ad_server
+DB_USER=ad_user
+DB_PASS=your_password
+DB_NAME=p2p_ad_server
+DB_HOST=localhost
 PAYPAL_CLIENT_ID=your_paypal_client_id
 PAYPAL_CLIENT_SECRET=your_paypal_client_secret
 PAYPAL_MODE=sandbox
@@ -59,11 +63,11 @@ WEBHOOK_ID=your_paypal_webhook_id
 JWT_SECRET=your_jwt_secret
 INTERACTION_RATES={"click":0.05,"video_view":0.10}
 BILLING_PERIOD_DAYS=30
-LIBP2P_BOOTSTRAP_PEERS=/ip4/127.0.0.1/tcp/15002/p2p/Qm... # 必要に応じて設定
+LIBP2P_BOOTSTRAP_PEERS=/ip4/ysmads.net/tcp/22335/p2p/12D3KooWQnQx31VE3a3SgWBT7eqDAuujqxWX8dr7c1e4gfy789DF # 必要に応じて設定
 ```
 
 注意:
-	•	MARIADB_URI は実際のデータベース接続情報に置き換えてください。
+	•	MARIADB_URI、DB_USER、DB_PASS、DB_NAME、DB_HOST は実際のデータベース接続情報に置き換えてください。
 	•	PAYPAL_CLIENT_ID と PAYPAL_CLIENT_SECRET は PayPal の開発者ダッシュボードから取得してください。
 	•	WEBHOOK_ID は PayPal の Webhook 設定から取得してください。
 	•	JWT_SECRET は強力なランダム文字列を使用してください。
@@ -103,7 +107,7 @@ node index.js
 	•	GET /publishers: 出版社の一覧取得（管理者のみ）
 	•	広告管理
 	•	POST /ads: 広告の登録（広告主のみ）
-	•	GET /ads/:id: 広告の取得（管理者および広告主のみ）
+	•	GET /ads/id/:id: 広告の取得（管理者および広告主のみ）
 	•	PUT /ads/:id: 広告の更新（広告主のみ）
 	•	GET /ads: 広告の一覧取得（管理者および広告主のみ）
 	•	インタラクション記録
