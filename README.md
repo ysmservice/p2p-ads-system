@@ -63,7 +63,7 @@ WEBHOOK_ID=your_paypal_webhook_id
 JWT_SECRET=your_jwt_secret
 INTERACTION_RATES={"click":0.05,"video_view":0.10}
 BILLING_PERIOD_DAYS=30
-LIBP2P_BOOTSTRAP_PEERS=/ip4/ysmads.net/tcp/22335/p2p/12D3KooWQnQx31VE3a3SgWBT7eqDAuujqxWX8dr7c1e4gfy789DF # 必要に応じて設定
+LIBP2P_BOOTSTRAP_PEERS=/ip4/ysmads.net/tcp/15001/p2p/12D3KooWQnQx31VE3a3SgWBT7eqDAuujqxWX8dr7c1e4gfy789DF # 必要に応じて設定
 ```
 
 注意:

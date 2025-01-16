@@ -117,7 +117,7 @@ export default async function createLibp2pNode() {
   const node = await createLibp2p({
     peerId,
     addresses: {
-      listen: ['/ip4/0.0.0.0/tcp/0']
+      listen: ['/ip4/0.0.0.0/tcp/15001']
     },
     transports: [tcp()],
     streamMuxers: [mplex()],
